@@ -27,7 +27,6 @@ class Square:
     def in_range(*args):
         for arg in args:
             if arg>7 or arg<0:
-                return False
-            
+                return False          
         return True
     

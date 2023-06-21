@@ -44,7 +44,7 @@ class Main:
                         dragger.drag_piece(piece)
 
                         if piece.color == board.next_turn:
-                            board.calc_moves(piece, clicked_row, clicked_col)
+                            board.calc_moves(piece, clicked_row, clicked_col, True)
                             dragger.save_initial(event.pos)                           
 
                 #elif event.type == pygame.MOUSEMOTION:
@@ -68,6 +68,16 @@ class Main:
                             board.move(dragger.piece, move)
                     
                     dragger.undrag_piece()
+
+                elif event.type == pygame.KEYDOWN:
+
+                    if event.key == pygame.K_r:
+                        game.reset()
+                        game = self.game
+                        screen = self.screen
+                        board = self.game.board
+                        dragger = self.game.dragger
+
 
                 elif event.type == pygame.QUIT:
                     pygame.quit()
