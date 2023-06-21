@@ -47,12 +47,6 @@ class Main:
                             board.calc_moves(piece, clicked_row, clicked_col, True)
                             dragger.save_initial(event.pos)                           
 
-                #elif event.type == pygame.MOUSEMOTION:
-                    #if dragger.dragging:
-                        #dragger.update_mouse(event.pos)
-                        #dragger.update_blit(screen)
-                        #pass
-
                 elif event.type == pygame.MOUSEBUTTONUP:
 
                     if dragger.dragging:

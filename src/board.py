@@ -272,11 +272,9 @@ class Board:
 
                 #Check if last move was a double move pawn
                 if isinstance(self.squares[last_final.row][last_final.col].piece, Pawn) and abs(last_initial.row - last_final.row) == 2:
-                    print('hm')
                     #Check if it moved beside THE pawn
                     if row == last_final.row and abs(col - last_final.col) == 1:
                         #Add move
-                        print('yo')
                         initial = Square(row, col)
                         final = Square(row + piece.dir, last_final.col)
                         move = Move(initial, final)
