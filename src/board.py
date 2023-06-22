@@ -18,7 +18,7 @@ class Board:
 
         #EN PASSANT
         if isinstance(piece, Pawn):
-            if self.check_enpassant(move):
+            if self.check_enpassant(piece, move):
                 self.squares[move.initial.row][move.final.col].piece = None
                 piece.en_passant = False
 
@@ -51,9 +51,9 @@ class Board:
         if final.row == 0 or final.row == 7:
             self.squares[final.row][final.col].piece = Queen(color)
 
-    def check_enpassant(self, move):
+    def check_enpassant(self, piece, move):
         #Checking if its moving diagonally and if the final square does not have a piece
-        if not move.final.has_piece() and abs(move.final.col - move.initial.col) == 1:
+        if (not move.final.has_piece()) and (abs(move.final.col - move.initial.col) == 1) and piece.en_passant == True:
             return True
         return False
     
@@ -149,33 +149,47 @@ class Board:
                 right_rook = self.squares[row][7].piece
                 if isinstance(left_rook, Rook):
                     if not left_rook.moved:
+                        castle_enable = True
                         for c in range(1, 4):
+                            if c>2:
+                                i = Square(row, col)
+                                f = Square(row, c)
+                                m = Move(i, f)
+                                if not self.valid_move(piece, m):
+                                    castle_enable = False
                             if self.squares[row][c].has_piece():
-                                break
-                            if c == 3:
-                                piece.left_rook = left_rook
+                                castle_enable = False
+                        
+                        if castle_enable:
+                            piece.left_rook = left_rook
 
-                                initial = Square(row, 0)
-                                final = Square(row, 3)
-                                move = Move(initial, final)
-                                if bool:
-                                    if not self.in_check(left_rook, move):
-                                        left_rook.add_move(move)
-                                else:
+                            initial = Square(row, 0)
+                            final = Square(row, 3)
+                            move = Move(initial, final)
+                            if bool:
+                                if not self.in_check(left_rook, move):
                                     left_rook.add_move(move)
+                            else:
+                                left_rook.add_move(move)
 
-                                initial = Square(row, col)
-                                final = Square(row, 2)
-                                move = Move(initial, final)
-                                if bool:
-                                    if not self.in_check(piece, move):
-                                        piece.add_move(move)
-                                else:
+                            initial = Square(row, col)
+                            final = Square(row, 2)
+                            move = Move(initial, final)
+                            if bool:
+                                if not self.in_check(piece, move):
                                     piece.add_move(move)
+                            else:
+                                piece.add_move(move)
 
                 if isinstance(right_rook, Rook):
                     if not right_rook.moved:
                         for c in range(5, 7):
+                            if c<6:
+                                i = Square(row, col)
+                                f = Square(row, c)
+                                m = Move(i, f)
+                                if not self.valid_move(piece, m):
+                                    break
                             if self.squares[row][c].has_piece():
                                 break
                             if c == 6:
@@ -280,8 +294,8 @@ class Board:
 
                 #Check if last move was a double move pawn
                 if isinstance(self.squares[last_final.row][last_final.col].piece, Pawn) and abs(last_initial.row - last_final.row) == 2:
-                    #Check if it moved beside THE pawn
-                    if row == last_final.row and abs(col - last_final.col) == 1:
+                    #Check if it is enemy pawn moved beside THE pawn
+                    if row == last_final.row and abs(col - last_final.col) == 1 and (last_final.piece.color != piece.color):
                         #Add move
                         initial = Square(row, col)
                         final = Square(row + piece.dir, last_final.col)
