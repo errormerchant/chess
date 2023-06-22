@@ -9,7 +9,6 @@ class Game:
     def __init__(self):
         self.board = Board()
         self.dragger = Dragger()
-        self.next_turn = 'white'
 
     #Show methods
 
@@ -44,10 +43,11 @@ class Game:
         if self.dragger.dragging:
             piece = self.dragger.piece
 
-            for move in piece.moves:
-                color = '#C86464' if (move.final.row + move.final.col) % 2 == 0 else '#C84646'
-                rect = (move.final.col * SQSIZE, move.final.row * SQSIZE, SQSIZE, SQSIZE)
-                pygame.draw.rect(surface, color, rect)
+            if piece.color == self.board.next_turn:
+                for move in piece.moves:
+                    color = '#C86464' if (move.final.row + move.final.col) % 2 == 0 else '#C84646'
+                    rect = (move.final.col * SQSIZE, move.final.row * SQSIZE, SQSIZE, SQSIZE)
+                    pygame.draw.rect(surface, color, rect)
 
     def show_last_move(self, surface):
 

@@ -20,7 +20,9 @@ class Board:
         if isinstance(piece, Pawn):
             if self.check_enpassant(move):
                 self.squares[move.initial.row][move.final.col].piece = None
+                piece.en_passant = False
 
+        #MOVING
         self.squares[move.initial.row][move.initial.col].piece = None
         self.squares[move.final.row][move.final.col].piece = piece
 
@@ -195,7 +197,7 @@ class Board:
                                     if not self.in_check(piece, move):
                                         piece.add_move(move)
                                 else:
-                                    piece.add_move(move)           
+                                    piece.add_move(move)        
 
 
         def knight_moves():
@@ -228,6 +230,12 @@ class Board:
                             piece.add_move(move)
 
         def pawn_moves():
+
+            #Removing en passant if it was available before
+            if piece.en_passant == True:
+                piece.moves.pop()
+                piece.en_passant = False
+
             #Vertical moves
             steps = 1 if piece.moved else 2
 
@@ -281,8 +289,10 @@ class Board:
                         if bool:
                             if not self.in_check(piece, move):
                                 piece.add_move(move)
+                                piece.en_passant = True
                         else:
                             piece.add_move(move)
+                            piece.en_passant = True
 
 
         def straightline_moves(incrs):
